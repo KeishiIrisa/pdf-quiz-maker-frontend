@@ -1,23 +1,80 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { DocumentList } from '@/components/document-list'
 import { ChevronLeft, MoreHorizontal, Plus } from 'lucide-react'
 import Link from 'next/link'
-
-// Mock data for documents
-const documents = [
-  { id: 1, title: 'Introduction', content: '# Introduction\n\nThis is the introduction to the subject.' },
-  { id: 2, title: 'Chapter 1', content: '# Chapter 1\n\nThis is the content of chapter 1.' },
-  { id: 3, title: 'Chapter 2', content: '# Chapter 2\n\nThis is the content of chapter 2.' },
-]
+import { EducationResource } from '@/types/education_resource'
+import { getEducationResourceById } from '@/api/education_resources'
+import { LearningDocument } from '@/types/learning_document'
+import { getLearningDocumentByIds } from '@/api/learning_documents'
 
 export default function SubjectPage({ params }: { params: { id: string } }) {
-  const [selectedDocument, setSelectedDocument] = useState(documents[0])
+  const [educationResource, setEducationResource] = useState<EducationResource | null>(null)
+  const [learningDocuments, setLearningDocuments] = useState<LearningDocument[] | null>([])
+  const [selectedDocument, setSelectedDocument] = useState<LearningDocument | undefined>(undefined)
   const [quizQuestions, setQuizQuestions] = useState<string[]>([])
+
+  const [id, setId] = useState<string | null>(null);
+
+  const handleUpdate = async () => {
+    if (id) {
+      try {
+        const updatedEducationResource = await getEducationResourceById(id);
+        setEducationResource(updatedEducationResource);
+      } catch (error) {
+        console.error('Error fetching education resource:', error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const unwrapParams = async () => {
+      const unwrappedParams = await params;
+      setId(unwrappedParams.id);
+    };
+
+    unwrapParams();
+  }, [params]);
+
+  useEffect(() => {
+    const fetchEducationResourceData = async () => {
+      if (id) {
+        try {
+          const data = await getEducationResourceById(id);
+          setEducationResource(data);
+        } catch (error) {
+          console.error('Error fetching education resource:', error);
+        }
+      }
+    };
+  
+    fetchEducationResourceData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchLearningDocuments = async () => {
+      if (educationResource?.learning_documents_ids) {
+        try {
+          const data = await getLearningDocumentByIds(educationResource.learning_documents_ids);
+          setLearningDocuments(data);
+        } catch (error) {
+          console.error('Error fetching learning documents:', error);
+        }
+      }
+    };
+  
+    fetchLearningDocuments();
+  }, [educationResource]);
+
+  useEffect(() => {
+    if (learningDocuments && learningDocuments.length > 0) {
+      setSelectedDocument(learningDocuments[0])
+    }
+  }, [learningDocuments])
 
   const handleGenerateQuiz = () => {
     // Mock quiz generation
@@ -39,30 +96,38 @@ export default function SubjectPage({ params }: { params: { id: string } }) {
             Back to Subjects
           </Button>
         </Link>
+        {learningDocuments && id &&(
         <DocumentList
-          documents={documents}
+          documents={learningDocuments}
           selectedDocument={selectedDocument}
           onSelectDocument={setSelectedDocument}
+          education_resource_id={id}
+          onCreate={handleUpdate}
         />
+        )}
       </div>
 
       {/* Main content */}
       <div className="flex-1 overflow-auto">
-        <div className="border-b border-gray-200 bg-white p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">{selectedDocument.title}</h1>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-        <div className="p-6">
-          <div className="prose max-w-none">
-            {selectedDocument.content.split('\n').map((line, index) => (
-              <p key={index}>{line}</p>
-            ))}
-          </div>
-        </div>
+        {selectedDocument && (
+          <>
+            <div className="border-b border-gray-200 bg-white p-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-gray-800">{selectedDocument.title}</h1>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="prose max-w-none">
+                {selectedDocument.content.split('\n').map((line, index) => (
+                  <p key={index}>{line}</p>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Right sidebar */}

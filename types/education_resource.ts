@@ -4,7 +4,7 @@ export interface EducationResource {
     _id: string;
     subject: string;
     description?: string;
-    learning_documents: LearningDocument[];
+    learning_documents_ids: string[];
     quizzes_ids: string[];
 }
 

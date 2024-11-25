@@ -10,7 +10,19 @@ export async function getEducationResources(): Promise<EducationResource[]> {
     });
 
     if (!res.ok) {
-        throw new Error('Failed to fetch subjects');
+        throw new Error('Failed to fetch education resources');
+    }
+
+    return res.json();
+}
+
+export async function getEducationResourceById(education_resource_id: string): Promise<EducationResource>  {
+    const res = await fetch(`http://localhost:9090/education-resources/${education_resource_id}`, {
+        cache: 'no-store'
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch education resources');
     }
 
     return res.json();
@@ -27,5 +39,19 @@ export async function createEducationResources(subject: string, description?: st
 
     if (res.status !== 201) {
         throw new Error('Failed to create subject');
+    }
+}
+
+export async function uploadFileToEducationResources(education_resource_id: string, file: File): Promise<void> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch(`http://localhost:9090/education-resources/${education_resource_id}/uploadfile`, {
+        method: 'PUT',
+        body: formData,
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to upload file');
     }
 }

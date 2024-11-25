@@ -45,7 +45,7 @@ export default function Dashboard() {
                 </CardDescription>
                 <div className="mt-4 flex items-center text-sm text-gray-500">
                   <FileText className="mr-1 h-4 w-4" />
-                  {education_resource.learning_documents.length} documents
+                  {education_resource.learning_documents_ids.length} documents
                 </div>
               </CardHeader>
             </Card>
