@@ -19,9 +19,6 @@ export function Header() {
               className="pl-8 w-64"
             />
           </div>
-          <Button variant="ghost" size="sm">
-            + New Subject
-          </Button>
         </div>
       </div>
     </header>

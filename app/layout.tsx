@@ -5,8 +5,8 @@ import { Header } from '@/components/header'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Learning Subjects SaaS',
-  description: 'Manage your learning subjects and documents',
+  title: 'Learning Subjects Spaces',
+  description: 'Manage your learning documents',
 }
 
 export default function RootLayout({
