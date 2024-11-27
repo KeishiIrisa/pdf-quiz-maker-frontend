@@ -15,7 +15,7 @@ import { getLearningDocumentByIds } from '@/api/learning_documents'
 import { generateQuiz, getQuizzesByIds } from '@/api/quizzes'
 import { Quiz } from '@/types/quiz'
 
-export default function SubjectPage({ params }: { params: { id: string } }) {
+export default function SubjectPage({ params }: { params: Promise<{ id: string }> }) {
   const [educationResource, setEducationResource] = useState<EducationResource | null>(null)
   const [learningDocuments, setLearningDocuments] = useState<LearningDocument[] | null>([])
   const [selectedDocument, setSelectedDocument] = useState<LearningDocument | undefined>(undefined)
