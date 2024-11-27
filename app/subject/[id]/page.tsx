@@ -5,18 +5,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { DocumentList } from '@/components/document-list'
+import { QuizContainer } from '@/components/quiz-container'
 import { ChevronLeft, MoreHorizontal, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { EducationResource } from '@/types/education_resource'
 import { getEducationResourceById } from '@/api/education_resources'
 import { LearningDocument } from '@/types/learning_document'
 import { getLearningDocumentByIds } from '@/api/learning_documents'
+import { generateQuiz, getQuizzesByIds } from '@/api/quizzes'
+import { Quiz } from '@/types/quiz'
 
 export default function SubjectPage({ params }: { params: { id: string } }) {
   const [educationResource, setEducationResource] = useState<EducationResource | null>(null)
   const [learningDocuments, setLearningDocuments] = useState<LearningDocument[] | null>([])
   const [selectedDocument, setSelectedDocument] = useState<LearningDocument | undefined>(undefined)
-  const [quizQuestions, setQuizQuestions] = useState<string[]>([])
+  const [quizzes, setQuizzes] = useState<Quiz[] | null>([])
 
   const [id, setId] = useState<string | null>(null);
 
@@ -76,16 +79,6 @@ export default function SubjectPage({ params }: { params: { id: string } }) {
     }
   }, [learningDocuments])
 
-  const handleGenerateQuiz = () => {
-    // Mock quiz generation
-    const newQuestions = [
-      'What is the main topic of this document?',
-      'Explain the key concepts discussed in this chapter.',
-      'How does this information relate to the previous chapter?',
-    ]
-    setQuizQuestions(newQuestions)
-  }
-
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       {/* Left sidebar */}
@@ -120,11 +113,7 @@ export default function SubjectPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             <div className="p-6">
-              <div className="prose max-w-none">
-                {selectedDocument.content.split('\n').map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
-              </div>
+              <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: selectedDocument.content }} />
             </div>
           </>
         )}
@@ -132,20 +121,8 @@ export default function SubjectPage({ params }: { params: { id: string } }) {
 
       {/* Right sidebar */}
       <div className="w-64 border-l border-gray-200 bg-white p-4">
-        <h2 className="text-lg font-semibold mb-4">Quiz</h2>
-        <Button onClick={handleGenerateQuiz} className="w-full mb-4">
-          <Plus className="h-4 w-4 mr-2" />
-          Generate Quiz
-        </Button>
-        {quizQuestions.length > 0 && (
-          <div className="space-y-4">
-            {quizQuestions.map((question, index) => (
-              <div key={index}>
-                <p className="font-medium mb-2">{question}</p>
-                <Textarea placeholder="Your answer" className="w-full" />
-              </div>
-            ))}
-          </div>
+        {educationResource && (
+          <QuizContainer educationResource={educationResource} />
         )}
       </div>
     </div>
