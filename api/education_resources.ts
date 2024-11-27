@@ -5,7 +5,7 @@ export async function getEducationResources(): Promise<EducationResource[]> {
     //     cache: 'no-store'
     // });
 
-    const res = await fetch('http://localhost:9090/education-resources', {
+    const res = await fetch('https://pdf-quiz-maker-mef45scida-an.a.run.app/education-resources', {
         cache: 'no-store'
     });
 
@@ -17,7 +17,7 @@ export async function getEducationResources(): Promise<EducationResource[]> {
 }
 
 export async function getEducationResourceById(education_resource_id: string): Promise<EducationResource>  {
-    const res = await fetch(`http://localhost:9090/education-resources/${education_resource_id}`, {
+    const res = await fetch(`https://pdf-quiz-maker-mef45scida-an.a.run.app/education-resources/${education_resource_id}`, {
         cache: 'no-store'
     });
 
@@ -29,7 +29,7 @@ export async function getEducationResourceById(education_resource_id: string): P
 }
 
 export async function createEducationResources(subject: string, description?: string) {
-    const res = await fetch('http://localhost:9090/education-resources', {
+    const res = await fetch('https://pdf-quiz-maker-mef45scida-an.a.run.app/education-resources', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export async function uploadFileToEducationResources(education_resource_id: stri
     const formData = new FormData();
     formData.append('file', file);
 
-    const res = await fetch(`http://localhost:9090/education-resources/${education_resource_id}/uploadfile`, {
+    const res = await fetch(`https://pdf-quiz-maker-mef45scida-an.a.run.app/education-resources/${education_resource_id}/uploadfile`, {
         method: 'PUT',
         body: formData,
     });

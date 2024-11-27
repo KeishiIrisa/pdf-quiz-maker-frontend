@@ -5,7 +5,7 @@ export async function getQuizzesByIds(quizzes_ids: string[]): Promise<Quiz[]> {
 
     for (const id of quizzes_ids) {
         try {
-            const res = await fetch(`http://localhost:9090/quiz/${id}`, {
+            const res = await fetch(`https://pdf-quiz-maker-mef45scida-an.a.run.app/quiz/${id}`, {
                 cache: 'no-store'
             });
 
@@ -26,7 +26,7 @@ export async function getQuizzesByIds(quizzes_ids: string[]): Promise<Quiz[]> {
 
 export async function generateQuiz(education_resources_id: string, learning_content: string): Promise<Quiz> {
     try {
-        const res = await fetch(`http://localhost:9090/quiz`, {
+        const res = await fetch(`https://pdf-quiz-maker-mef45scida-an.a.run.app/quiz`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

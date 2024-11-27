@@ -5,7 +5,7 @@ export async function getLearningDocumentByIds(learning_documents_ids: string[])
     
     for (const id of learning_documents_ids) {
         try {
-            const res = await fetch(`http://localhost:9090/learning-document/${id}`, {
+            const res = await fetch(`https://pdf-quiz-maker-mef45scida-an.a.run.app/learning-document/${id}`, {
                 cache: 'no-store'
             });
 
